@@ -2,8 +2,15 @@
 
 ## Project Overview / Methods
 
--Solves boltzmann equation for dist. function
--Includes 
+-Reason for solving boltzmann equation
+
+-Method of characteristics / boltzmann equation
+
+$df/dt = 0$
+
+-Includes poisson solver
+
+-
 
 ## Tests
 
@@ -22,6 +29,7 @@ We perform three tests of the code, one based on expected physical results, and 
 --- Tests.py
 |-- OUTPUT
     |-- TEST1
+        --- Density
     |-- TEST2
     |-- TEST3
 ```
