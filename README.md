@@ -4,23 +4,27 @@
 
 -Reason for solving boltzmann equation
 
+-Dist function --> full info
+
 -Method of characteristics / boltzmann equation
 
 $df/dt = 0$
 
--Includes poisson solver
+-Includes poisson solver for $\Phi(x)$
 
--
+-Extract physical info from fourier modes/rho/energy/etc.
+
+-Bilinear interpolation to get updated f
 
 ## Tests
 
 We perform three tests of the code, one based on expected physical results, and two on numerical stability. 
 
-1) ...
+1) We expect there to be a critical jeans wavelength (or inversely, jeans wavenumber), at which perturbing the system will cause it to become unstable, and lead to increasing density. This is roughly inspired by the jeans criterion for gravitational collapse of dust/gas clouds. We track the fourier modes of the density. We expect these fourier modes can be written in the form $\exp(\gamma t)$, where the sign of $\gamma$ determines the stability of the mode (<0 stable, >0 unstable). We track the fourier modes as a function for each perturbing k-value, and fit to find the value of $\gamma$. We expect that at some critical k-value $k_J$, the sign of $\gamma$ will switch. 
 
-2) ...
+2) We perform a numerical stability test, by tracking the total energy of the system as a function of time. The kinetic energy can be extracted as the 2nd moment (w.r.t velocity) of the distribution function $f$, and the potential energy $\Phi(x)$ is calculated already during the simulation process. At several timesteps, the total energy of the system is calculated, and at the end of the full simulation, we calculate the percent change in the total energy, as a rough estimate for the stability. The total energy of the system appears to increase over time, regardless of if the solution is stable (>kJ) or unstable (<kJ), but that for stable solutions, the percent change in the total energy of the system is much lower than that of the unstable solutions. I suspect there are ways I could better improve the energy stability, maybe by using spline interpolation rather than bilinear interpolation, but I am not 100% sure. 
 
-3) ...
+3) This approach to solving the Boltzmann equation is an implicit method, and as such, I expect to be able to take larger timesteps in the simulation while maintaining numerical stability. To test this, I ran the solver using a variety of time steps, ranging from reasonably small to quite large (dt=0.1), using a perturbing k-value greater than kJ (and therefore, I expect a stable solution). For each time step, I calculated the % change in energy from the initial to final state, as well as the growth rate $\gamma$ of the system. At larger time steps, around 0.05 to 0.1, there is a clear jump in instability, but for time steps smaller than this, there is decent consistency between results, showing some numerical stability even for larger timesteps around 0.02. For explicit methods, we have often had to use much smaller timesteps than 0.02, showing some value in using an implicit method, though I am sure there are additional ways I can improve numerical stability further.
 
 ## Code Documentation
 
@@ -29,11 +33,22 @@ We perform three tests of the code, one based on expected physical results, and 
 --- Tests.py
 |-- OUTPUT
     |-- TEST1
-        --- Density
+        --- Plots of spatial density $\rho(x)$ for different time values at different k mode values
+        --- Plot of growth rate ($\gamma$) versus different k values
     |-- TEST2
+        --- Plots of energy values versus time at different k mode values
     |-- TEST3
+        --- Plot of stability in energy (% change) for different dt values
+        --- Plot of growth rate ($\gamma$) for different dt values
 ```
 
 ## How to Run
 
 Running this project is very simple. The Semi-lagrangian solver is implemented as a class in SemiLagrangian.py. All three tests are implemented in Tests.py. To recreate the project results, run Tests.py on the command line. This outputs plots to the OUTPUT folder, and in to the folders TEST1, TEST2, and TEST3. 
+
+TEST1 includes plots of spatial density at different time values for different k mode values
+
+TEST2 includes plots of energy stability versus time for different k mode values
+
+TEST3 includes dt numerical stability plots for both total system energy and growth rate
+
