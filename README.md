@@ -2,27 +2,23 @@
 
 ## Project Overview / Methods
 
--Reason for solving boltzmann equation
-
--Dist function --> full info
-
--Method of characteristics / boltzmann equation
-
-$df/dt = 0$
-
--Includes poisson solver for $\Phi(x)$
-
--Extract physical info from fourier modes/rho/energy/etc.
-
--Bilinear interpolation to get updated f
-
 This project implements a Semi-Lagrangian solver of the Boltzmann equation. The Boltzmann equation, is a partial differential equation for the distribution function $f$ of a system. Given a gravitational potential $\Phi$ and neglibile interparticle collisions the equation takes the form
 
 $$
 \frac{\partial f}{\partial t} + \mathbf{v} \cdot \nabla_x f + \nabla_x \Phi \cdot \nabla_v f = 0
 $$
 
-Through moments of the distribution, we can compute relevant physical observables, such as density, energy, etc. 
+Through moments of the distribution, we can compute relevant physical observables, such as density, energy, etc. We can rewrite this equation to take the form $df/dt = 0$. The distribution function is then constant along characteristics, which we can use to write an implicit solver, as opposed to a traditional explicit solver, such as a finite difference method. We define a 2D grid of position and velocity values (x, v) on which $f$ is defined. 
+
+The Semi-Lagrangian solver traces characteristics of the distribution function through the equality
+
+$$
+f(x,v,t+\Delta t) = f(x',v',t)
+$$
+
+Where $x' = x - v \Delta t$ and $v' = v + F \Delta t$. We compute the force through solving the Poisson equation $\nabla^2 \Phi = 4\pi G \rho(x)$. This is done through Fourier transforms. Since the updated $x'$ and $v'$ values fall outside of the defined grid points, values of $f$ are found through a bilinear interpolation based on current $f$ values. Values of the density, energy, wavenumber, and time are stored periodically. 
+
+This solver is implemented through a python class in SemiLagrangian.py, and three tests of the solver are implemented in Tests.py
 
 ## Tests
 
