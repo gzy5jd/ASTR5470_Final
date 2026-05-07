@@ -16,6 +16,14 @@ $df/dt = 0$
 
 -Bilinear interpolation to get updated f
 
+This project implements a Semi-Lagrangian solver of the Boltzmann equation. The Boltzmann equation, is a partial differential equation for the distribution function $f$ of a system. Given a gravitational potential $\Phi$ and neglibile interparticle collisions the equation takes the form
+
+$$
+\frac{\partial f}{\partial t} + \mathbf{v} \cdot \nabla_x f + \nabla_x \Phi \cdot \nabla_v f = 0
+$$
+
+Through moments of the distribution, we can compute relevant physical observables, such as density, energy, etc. 
+
 ## Tests
 
 We perform three tests of the code, one based on expected physical results, and two on numerical stability. 
